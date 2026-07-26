@@ -1,10 +1,12 @@
 package com.devsecops.employeeservice.controller;
 
+import com.devsecops.employeeservice.dto.EmployeeRequest;
 import com.devsecops.employeeservice.entity.Employee;
 import com.devsecops.employeeservice.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -29,13 +31,24 @@ public class EmployeeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee createEmployee(@Valid  @RequestBody Employee employee) {
+    public Employee createEmployee(@Valid @RequestBody EmployeeRequest request) {
+        Employee employee = new Employee();
+        employee.setName(request.getName());
+        employee.setEmail(request.getEmail());
+        employee.setDepartment(request.getDepartment());
+
         return service.saveEmployee(employee);
     }
 
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable Long id,
-                                   @Valid @RequestBody Employee employee) {
+                                   @Valid @RequestBody EmployeeRequest request) {
+
+        Employee employee = new Employee();
+        employee.setName(request.getName());
+        employee.setEmail(request.getEmail());
+        employee.setDepartment(request.getDepartment());
+
         return service.updateEmployee(id, employee);
     }
 
