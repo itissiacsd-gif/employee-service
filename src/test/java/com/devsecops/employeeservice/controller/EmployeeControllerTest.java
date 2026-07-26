@@ -32,14 +32,53 @@ class EmployeeControllerTest {
     @MockBean
     private EmployeeService service;
 
+    private Employee buildEmployee() {
+        return new Employee(
+                1L,
+                "Karan",
+                "karan@test.com",
+                "IT",
+                50000.0
+        );
+    }
+
+    private Employee buildUpdatedEmployee() {
+        return new Employee(
+                1L,
+                "Updated",
+                "updated@test.com",
+                "DevOps",
+                70000.0
+        );
+    }
+
+    private String employeeJson() {
+        return """
+                {
+                  "name":"Karan",
+                  "email":"karan@test.com",
+                  "department":"IT",
+                  "salary":50000
+                }
+                """;
+    }
+
+    private String updatedEmployeeJson() {
+        return """
+                {
+                  "name":"Updated",
+                  "email":"updated@test.com",
+                  "department":"DevOps",
+                  "salary":70000
+                }
+                """;
+    }
+
     @Test
     void getAllEmployees() throws Exception {
 
-        Employee employee =
-                new Employee(1L,"Karan","karan@test.com","IT",50000.0);
-
         when(service.getAllEmployees())
-                .thenReturn(List.of(employee));
+                .thenReturn(List.of(buildEmployee()));
 
         mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
@@ -49,63 +88,35 @@ class EmployeeControllerTest {
     @Test
     void getEmployeeById() throws Exception {
 
-        Employee employee =
-                new Employee(1L,"Karan","karan@test.com","IT",50000.0);
-
         when(service.getEmployeeById(1L))
-                .thenReturn(employee);
+                .thenReturn(buildEmployee());
 
         mockMvc.perform(get("/employees/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email")
-                        .value("karan@test.com"));
+                .andExpect(jsonPath("$.email").value("karan@test.com"));
     }
 
     @Test
     void createEmployee() throws Exception {
 
-        Employee employee =
-                new Employee(1L,"Karan","karan@test.com","IT",50000.0);
-
         when(service.saveEmployee(any(Employee.class)))
-                .thenReturn(employee);
-
-        String json = """
-                {
-                  "name":"Karan",
-                  "email":"karan@test.com",
-                  "department":"IT",
-                  "salary":50000
-                }
-                """;
+                .thenReturn(buildEmployee());
 
         mockMvc.perform(post("/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(employeeJson()))
                 .andExpect(status().isCreated());
     }
 
     @Test
     void updateEmployee() throws Exception {
 
-        Employee employee =
-                new Employee(1L,"Updated","updated@test.com","DevOps",70000.0);
-
         when(service.updateEmployee(eq(1L), any(Employee.class)))
-                .thenReturn(employee);
-
-        String json = """
-                {
-                  "name":"Updated",
-                  "email":"updated@test.com",
-                  "department":"DevOps",
-                  "salary":70000
-                }
-                """;
+                .thenReturn(buildUpdatedEmployee());
 
         mockMvc.perform(put("/employees/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedEmployeeJson()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Updated"));
     }

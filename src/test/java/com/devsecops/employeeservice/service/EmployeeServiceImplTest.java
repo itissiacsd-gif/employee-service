@@ -6,17 +6,16 @@ import com.devsecops.employeeservice.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
@@ -31,27 +30,39 @@ class EmployeeServiceImplTest {
 
     @BeforeEach
     void setup() {
-        employee = new Employee();
+        employee = createEmployee();
+    }
+
+    private Employee createEmployee() {
+        Employee employee = new Employee();
         employee.setId(1L);
         employee.setName("Karan");
         employee.setEmail("karan@test.com");
         employee.setDepartment("IT");
         employee.setSalary(50000.0);
+        return employee;
+    }
+
+    private Employee createUpdatedEmployee() {
+        Employee employee = new Employee();
+        employee.setName("Updated");
+        employee.setEmail("updated@test.com");
+        employee.setDepartment("DevOps");
+        employee.setSalary(60000.0);
+        return employee;
     }
 
     @Test
     void getAllEmployeesTest() {
-
-        when(repository.findAll()).thenReturn(Arrays.asList(employee));
+        when(repository.findAll()).thenReturn(List.of(employee));
 
         assertEquals(1, service.getAllEmployees().size());
 
-        verify(repository, times(1)).findAll();
+        verify(repository).findAll();
     }
 
     @Test
     void getEmployeeByIdTest() {
-
         when(repository.findById(1L)).thenReturn(Optional.of(employee));
 
         Employee result = service.getEmployeeById(1L);
@@ -65,7 +76,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void employeeNotFoundTest() {
-
         when(repository.findById(100L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
@@ -76,12 +86,10 @@ class EmployeeServiceImplTest {
 
     @Test
     void saveEmployeeTest() {
-
         when(repository.save(employee)).thenReturn(employee);
 
         Employee result = service.saveEmployee(employee);
 
-        assertNotNull(result);
         assertEquals(employee, result);
 
         verify(repository).save(employee);
@@ -89,12 +97,7 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployeeTest() {
-
-        Employee updated = new Employee();
-        updated.setName("Updated");
-        updated.setEmail("updated@test.com");
-        updated.setDepartment("DevOps");
-        updated.setSalary(60000.0);
+        Employee updated = createUpdatedEmployee();
 
         when(repository.findById(1L)).thenReturn(Optional.of(employee));
         when(repository.save(any(Employee.class))).thenReturn(employee);
@@ -109,7 +112,6 @@ class EmployeeServiceImplTest {
 
     @Test
     void deleteEmployeeTest() {
-
         doNothing().when(repository).deleteById(1L);
 
         service.deleteEmployee(1L);
