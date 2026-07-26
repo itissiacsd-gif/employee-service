@@ -32,29 +32,27 @@ public class EmployeeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee createEmployee(@Valid @RequestBody EmployeeRequest request) {
-        Employee employee = new Employee();
-        employee.setName(request.getName());
-        employee.setEmail(request.getEmail());
-        employee.setDepartment(request.getDepartment());
-
-        return service.saveEmployee(employee);
+        return service.saveEmployee(mapToEmployee(request));
     }
 
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable Long id,
                                    @Valid @RequestBody EmployeeRequest request) {
-
-        Employee employee = new Employee();
-        employee.setName(request.getName());
-        employee.setEmail(request.getEmail());
-        employee.setDepartment(request.getDepartment());
-
-        return service.updateEmployee(id, employee);
+        return service.updateEmployee(id, mapToEmployee(request));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEmployee(@PathVariable Long id) {
         service.deleteEmployee(id);
+    }
+
+    private Employee mapToEmployee(EmployeeRequest request) {
+        Employee employee = new Employee();
+        employee.setName(request.getName());
+        employee.setEmail(request.getEmail());
+        employee.setDepartment(request.getDepartment());
+        employee.setSalary(request.getSalary());
+        return employee;
     }
 }
