@@ -1,0 +1,10 @@
+Thank you for installing employee-service.
+
+To verify the deployment:
+
+kubectl get pods
+kubectl get svc
+
+To access the application:
+
+minikube service {{ .Release.Name }}
