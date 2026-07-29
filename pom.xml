@@ -21,17 +21,13 @@
     <description>Employee Service DevSecOps Project</description>
 
     <properties>
-
         <java.version>17</java.version>
-
         <sonar.organization>itissiacsd-gif</sonar.organization>
         <sonar.projectKey>itissiacsd-gif_employee-service</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.build.directory}/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
-
     </properties>
 
     <dependencies>
@@ -67,7 +63,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Swagger -->
+        <!-- Swagger / OpenAPI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -98,10 +94,9 @@
     </dependencies>
 
     <build>
-
         <plugins>
 
-            <!-- Spring Boot -->
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -114,82 +109,58 @@
                 <version>5.2.0.4988</version>
             </plugin>
 
-            <!-- JaCoCo -->
+            <!-- JaCoCo Code Coverage -->
             <plugin>
-
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.13</version>
-
                 <executions>
-
                     <execution>
-
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-
                     </execution>
-
                     <execution>
-
                         <id>report</id>
-
                         <phase>verify</phase>
-
                         <goals>
                             <goal>report</goal>
                         </goals>
-
                     </execution>
-
                 </executions>
-
             </plugin>
 
             <!-- OWASP Dependency Check -->
-            <plugin>
+		<plugin>
+   		 <groupId>org.owasp</groupId>
+    		<artifactId>dependency-check-maven</artifactId>
+    		<version>12.1.8</version>
 
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
+    		<configuration>
+        	<nvdApiKey>d8c5495b-d280-41e6-9ee6-2c3497380997</nvdApiKey>
 
-                <version>12.1.3</version>
+        <autoUpdate>true</autoUpdate>
 
-                <configuration>
+        <ossIndexAnalyzerEnabled>false</ossIndexAnalyzerEnabled>
+        <knownExploitedEnabled>true</knownExploitedEnabled>
 
-                    <!-- Disable OSS Index -->
-                    <ossIndexAnalyzerEnabled>false</ossIndexAnalyzerEnabled>
+        <failBuildOnCVSS>11</failBuildOnCVSS>
 
-                    <!-- Never fail build because of CVSS -->
-                    <failBuildOnCVSS>11</failBuildOnCVSS>
+        <formats>
+            <format>HTML</format>
+            <format>JSON</format>
+        </formats>
+    </configuration>
 
-                    <!-- Cache NVD for 24 hours -->
-                    <nvdValidForHours>24</nvdValidForHours>
-
-                    <!-- Report Formats -->
-                    <formats>
-                        <format>HTML</format>
-                        <format>JSON</format>
-                    </formats>
-
-                </configuration>
-
-                <executions>
-
-                    <execution>
-
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-
-                    </execution>
-
-                </executions>
-
-            </plugin>
-
+    <executions>
+        <execution>
+            <goals>
+                <goal>check</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
         </plugins>
-
     </build>
 
 </project>
