@@ -1,9 +1,9 @@
 replicaCount: 4
 
 image:
-  repository: employee-service
-  tag: "v1"
-  pullPolicy: Never
+  repository: itissiacsd123/employee-service
+  tag: "latest"
+  pullPolicy: Always
 
 service:
   type: NodePort
